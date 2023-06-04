@@ -1,0 +1,59 @@
+To return the mismatch in patterns using percentage between a user's past transactions and their new transactions, you can modify the previous example to calculate the percentage difference between the number of spending clusters in the user's past and new transactions. Here's an example of how to do this:
+
+1. Modify the Flask route to take a user ID and a number of past days to include in the analysis as input:
+   ````````python
+   @app.route('/transactions/analyze/<user_id>/<past_days>')
+   def analyze_transactions(user_id, past_days):
+       # Get the transactions of the user from the database for the given past days
+       past_date = datetime.now() - timedelta(days=int(past_days))
+       user_transactions = list(transactions.find({'user_id': user_id, 'date': {'$gte': past_date}}))
+
+       # Preprocess the transaction data for the user
+       df = pd.DataFrame(user_transactions)
+       df['date'] = pd.to_datetime(df['date'])
+       df = df.sort_values(by='date')
+       df['amount'] = pd.to_numeric(df['amount'])
+       df['day_of_week'] = df['date'].dt.dayofweek
+       df['day_of_month'] = df['date'].dt.day
+       df['month'] = df['date'].dt.month
+       df['year'] = df['date'].dt.year
+       df = df.drop(['_id', 'date'], axis=1)
+       scaler = StandardScaler()
+       X = scaler.fit_transform(df)
+
+       # Train a machine learning model on the preprocessed data for the user
+       kmeans = KMeans(n_clusters=2)
+       kmeans.fit(X)
+
+       # Use the model to predict patterns in the user's new transactions
+       new_transactions = list(transactions.find({'user_id': user_id, 'date': {'$gte': datetime.now() - timedelta(days=1)}}))
+       new_df = pd.DataFrame(new_transactions)
+       new_df['date'] = pd.to_datetime(new_df['date'])
+       new_df = new_df.sort_values(by='date')
+       new_df['amount'] = pd.to_numeric(new_df['amount'])
+       new_df['day_of_week'] = new_df['date'].dt.dayofweek
+       new_df['day_of_month'] = new_df['date'].dt.day
+       new_df['month'] = new_df['date'].dt.month
+       new_df['year'] = new_df['date'].dt.year
+       new_df = new_df.drop(['_id', 'date'], axis=1)
+       new_X = scaler.transform(new_df)
+       new_cluster_labels = kmeans.predict(new_X)
+       num_spending_clusters_new = len(set(new_cluster_labels))
+
+       # Calculate the percentage difference in the number of spending clusters
+       num_spending_clusters_past = kmeans.labels_.size - num_spending_clusters_new
+       percentage_difference = abs(num_spending_clusters_past - num_spending_clusters_new) / ((num_spending_clusters_past + num_spending_clusters_new) / 2) * 100
+
+       # Return the analysis result
+       return jsonify({'percentage_difference': percentage_difference})
+   ```
+
+2. Run the Flask app and call the `analyze_transactions` route with a user ID and a number of past days as input:
+   `````python
+   if __name__ == '__main__':
+       app.run(debug=True)
+   ```
+
+This function retrieves the transactions of the user from the database for the given past days, preprocesses the data for the user, trains a KMeans clustering model on the preprocessed data for the user, and uses the model to predict patterns in the user's new transactions. The new transactions are retrieved from the database for the past day and preprocessed in the same way as the past transactions. The percentage difference in the number of spending clusters between the past and new transactions is calculated and returned as the analysis result.
+
+Note that this is just an example and that you may need to modify the code to fit your specific use case. However, this should give you an idea of how to return the mismatch in patterns using percentage between a user's past transactions and their new transactions in a Flask app.

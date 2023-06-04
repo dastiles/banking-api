@@ -1,0 +1,96 @@
+  console.log(clusterAssignments);
+Certainly! Here's an example of how to use ml5.js with React to implement a loan amount prediction model based on transaction data.
+
+First, you'll need to create a new React project and install the ml5.js library:
+
+```
+npx create-react-app loan-prediction-app
+cd loan-prediction-app
+npm install ml5
+```
+
+Next, create a new component called `LoanPredictionForm` that will allow the user to input their transaction data and receive a loan amount prediction. Here's an example implementation:
+
+```jsx
+import React, { useState } from 'react';
+import ml5 from 'ml5';
+
+function LoanPredictionForm() {
+  const [date, setDate] = useState('');
+  const [location, setLocation] = useState('');
+  const [destination, setDestination] = useState('');
+  const [amount, setAmount] = useState('');
+  const [prediction, setPrediction] = useState(null);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    // Prepare the input data as an array
+    const inputData = [date, location, destination, amount];
+
+    // Load the pre-trained model
+    const model = ml5.neuralNetwork({
+      inputs: 4, // number of input variables
+      outputs: 1, // number of output variables (loan amount)
+      task: 'regression' // regression task (predicting a continuous value)
+    });
+    model.load('model/model.json', () => {
+      // Make a prediction with the input data
+      model.predict(inputData, (err, result) => {
+        if (err) {
+          console.error(err);
+        } else {
+          setPrediction(result[0]);
+        }
+      });
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Date:
+        <input type="text" value={date} onChange={event => setDate(event.target.value)} />
+      </label>
+      <label>
+        Location:
+        <input type="text" value={location} onChange={event => setLocation(event.target.value)} />
+      </label>
+      <label>
+        Destination:
+        <input type="text" value={destination} onChange={event => setDestination(event.target.value)} />
+      </label>
+      <label>
+        Amount:
+        <input type="number" value={amount} onChange={event => setAmount(event.target.value)} />
+      </label>
+      <button type="submit">Predict Loan Amount</button>
+      {prediction && <p>Predicted loan amount: ${prediction}</p>}
+    </form>
+  );
+}
+```
+
+In this component, we define four state variables to hold the user's input for date, location, destination, and amount, as well as a `prediction` variable to hold the predicted loan amount. When the user submits the form, we load a pre-trained neural network model and use it to make a prediction based on the input data. If the prediction is successful, we update the `prediction` state variable and display it on the screen.
+
+Note that the example assumes you have a pre-trained model saved in the `public/model` directory. You can train your own model using the techniques described earlier and save it using the `model.save` method in ml5.js.
+
+Finally, render the `LoanPredictionForm` component in your main `App` component:
+
+```jsx
+import React from 'react';
+import LoanPredictionForm from './LoanPredictionForm';
+
+function App() {
+  return (
+    <div>
+      <h1>Loan Amount Prediction</h1>
+      <LoanPredictionForm />
+    </div>
+  );
+}
+
+export default App;
+```
+
+And that's it! You should now be able to run the React app and use the loan amount prediction form to make predictions based on transaction data.
