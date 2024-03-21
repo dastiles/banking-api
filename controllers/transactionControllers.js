@@ -1,7 +1,8 @@
 const expressAsyncHandler = require("express-async-handler");
 const Transaction = require('../models/transactionsModel')
 const User = require('../models/authModels')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const leadsModel = require("../models/leadsModel");
 
 
 const addTransaction = expressAsyncHandler(async (req, res) => {
@@ -107,7 +108,7 @@ const addTransaction = expressAsyncHandler(async (req, res) => {
 
 const getUserTransactions = expressAsyncHandler(async (req, res) => {
     try {
-        let userTransactions = await Transaction.find({ user: req.user.id })
+        let leads = await leads.find({ user: req.user.id })
 
         res.status(200)
         res.json(userTransactions)

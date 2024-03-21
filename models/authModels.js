@@ -10,41 +10,24 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please add an email'],
         },
-        address: {
-            type: String,
-            required: [true, 'Please add your address']
-        }
-        ,
         password: {
             type: String,
-            required: [true, 'Please add password']
-        }
-        ,
-        currentBalance: {
-            type: Number,
-        }
-        ,
-        newBalance: {
-            type: Number,
+            required: [true, 'Please add password'],
+            select:false
+            
+        },
+
+        role: {
+            type: Boolean,
         },
         phone: {
-            type: String,
-            required: [true, 'Account is required'],
-            unique: true
-        },
-        blocked: {
-            type: Boolean,
-            required: [true, 'Please fill in field']
-        }
-        ,
-        attempts: {
-            type: Number,
-            required: [true, 'Attempts can be empty']
+            type:String
         }
     },
     {
         timestamps: true
     }
 )
+
 
 module.exports = mongoose.model('User', userSchema)

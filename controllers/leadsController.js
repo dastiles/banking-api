@@ -1,0 +1,48 @@
+const expressAsyncHandler = require("express-async-handler");
+const Leads= require("../models/leadsModel");
+const ProfessionalCpa = require("../models/professionalCpa");
+
+const getLeads = expressAsyncHandler(async (req, res) => {
+  try {
+    let userIssue = await ProfessionalCpa.find({ user: req.user.id }).populate('user');
+      if (userIssue) {
+          const { service } = userIssue[0]
+          console.log(userIssue)
+      let lead = await Leads.find({ issues: service}).populate(
+        "user"
+      );
+     
+      res.status(200);
+      res.json(lead);
+    }
+      res.status(400);
+      res.json({message:'no user found'});
+   
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+    throw new Error(error);
+  }
+});
+
+const getAllLeads = expressAsyncHandler(async (req, res) => {
+    try {
+     
+        let lead = await Leads.find().populate(
+          "user"
+        );
+       
+        res.status(200);
+        res.json(lead);
+     
+    } catch (error) {
+      console.log(error);
+      res.status(400);
+      throw new Error(error);
+    }
+  });
+
+module.exports = {
+    getLeads,
+    getAllLeads,
+};
