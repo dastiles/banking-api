@@ -9,7 +9,10 @@ const getLeads = expressAsyncHandler(async (req, res) => {
           const { service } = userIssue[0]
           console.log(userIssue)
       let lead = await Leads.find({ issues: service}).populate(
-        "user"
+        {
+            path: 'user',
+            select: '-password' // Exclude the password field
+         }
       );
      
       res.status(200);

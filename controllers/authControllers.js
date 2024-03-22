@@ -6,7 +6,7 @@ const Leads = require("../models/leadsModel");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../config/mail");
 
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -14,11 +14,10 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: 'charlesmadhuku11@gmail.com',
-    pass: 'senb llfx izcx snak',
+    user: "charlesmadhuku11@gmail.com",
+    pass: "senb llfx izcx snak",
   },
 });
-
 
 // @desc Open new for a user
 // @route POST /api/auth/open_account
@@ -56,12 +55,11 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
   console.log(userExits, "bembe");
   if (userExits) {
     res.status(400).json({ message: "Email Already registered" });
-    return;
+    throw new Error("Please add all fields");
   }
   // harsh the password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  console.log("runninh");
   const user = await User.create({
     name,
     role: true,
@@ -71,7 +69,7 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
 
   // Welcome to Bark, charles madhuku
   // We're excited to start helping you grow your business!
-  
+
   // We'll now email you targeted leads from new customers. Ensure you get the right leads by confirming your lead preferences now.
 
   if (user) {
@@ -89,23 +87,22 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
     });
 
     const mailOptions = {
-      from: 'charlesmadhuku11@gmail.com',
+      from: "charlesmadhuku11@gmail.com",
       to: email,
-      subject: 'Welcome to Access A CPA',
-      text: 'Access A CPA',
+      subject: "Welcome to Access A CPA",
+      text: "Access A CPA",
       html: `<h1> Welcome to Access A CPA, ${name}</h1> \n <p>We're excited to start helping you grow your business!</p> \n\n <p>We'll now email you targeted leads from new customers. Ensure you get the right leads by confirming your lead preferences now</p> `,
     };
-  
-  transporter.sendMail(mailOptions, (error, info) => {
+
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
-       throw new Error(error)
+        throw new Error(error);
       } else {
-        console.log('Email sent: ' + info.response);
+        console.log("Email sent: " + info.response);
         info.response;
       }
-  });
-
+    });
 
     res.status(201).json({
       id,
@@ -158,25 +155,24 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       issues: issueArray,
     });
 
+    const mailOptions = {
+      from: "charlesmadhuku11@gmail.com",
+      to: "dastilesforever@gmail.com",
+      subject: "Issue",
+      text: "That was easy!",
+      html: "<b>Hey there!</b><br>This is our first message sent with Nodemailer<br/>",
+    };
 
-   const mailOptions = {
-        from: 'charlesmadhuku11@gmail.com',
-        to: 'dastilesforever@gmail.com',
-        subject: 'Issue',
-        text: 'That was easy!',
-        html: '<b>Hey there!</b><br>This is our first message sent with Nodemailer<br/>',
-      };
-    
     transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-         throw new Error(error)
-        } else {
-          console.log('Email sent: ' + info.response);
-          info.response;
-        }
+      if (error) {
+        console.log(error);
+        throw new Error(error);
+      } else {
+        console.log("Email sent: " + info.response);
+        info.response;
+      }
     });
-    
+
     res.status(201);
     res.json(leads);
   } else {
@@ -200,22 +196,22 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       });
 
       const mailOptions = {
-        from: 'charlesmadhuku11@gmail.com',
-        to: 'dastilesforever@gmail.com',
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!',
-        html: '<b>Hey there!</b><br>This is our first message sent with Nodemailer<br/>',
+        from: "charlesmadhuku11@gmail.com",
+        to: "dastilesforever@gmail.com",
+        subject: "Sending Email using Node.js",
+        text: "That was easy!",
+        html: "<b>Hey there!</b><br>This is our first message sent with Nodemailer<br/>",
       };
-    
-    transporter.sendMail(mailOptions, (error, info) => {
+
+      transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.log(error);
-         throw new Error(error)
+          throw new Error(error);
         } else {
-          console.log('Email sent: ' + info.response);
+          console.log("Email sent: " + info.response);
         }
-    });
-      
+      });
+
       res.status(201);
       res.json(leads);
     } else {
@@ -228,6 +224,7 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
 const loginUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  console.log(req.body)
   if (!email || !password) {
     res.status(400);
     throw new Error("Please add all fields");
@@ -236,26 +233,16 @@ const loginUser = expressAsyncHandler(async (req, res) => {
   // check if the user already exists
   const userExits = await User.findOne({ email });
 
+  console.log(userExits.password)
   if (userExits && (await bcrypt.compare(password, userExits.password))) {
     const {
       id,
-      name,
-      address,
-      email,
-      phone,
-      password,
-      currentBalance,
-      newBalance,
-      account,
+     role,
     } = userExits;
-    res.status(200).json({
+    res.status(201).json({
       id,
-      name,
-      address,
-      email,
-      phone,
-      account,
-      token: generateToken(id),
+      role,
+      token: generateToken(id, role),
     });
   } else {
     res.status(400);
