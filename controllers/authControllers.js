@@ -91,7 +91,22 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
       to: email,
       subject: "Welcome to Access A CPA",
       text: "Access A CPA",
-      html: `<h1> Welcome to Access A CPA, ${name}</h1> \n <p>We're excited to start helping you grow your business!</p> \n\n <p>We'll now email you targeted leads from new customers. Ensure you get the right leads by confirming your lead preferences now</p> `,
+      html: `<h1>Hi <strong>${name}</strong></h1>,
+      \n\n\n
+      <p>Congratulations on joining Access A CPA. We can help you find high-quality Accounting leads in moments to grow your business to help you earn more.</p>
+      \n\n\n
+      <ul>
+      <li>You get leads sent over for free</li>
+      <li>Only pay for those you contact</li>
+      <li>Customer contact details verified for you</li> 
+      <li>There's 20% off your first pack and you can start contacting customers straight away.</li>
+      </ul>
+      \n\n\n
+      <p>If you have questions please reply to my email or call on 6305444869</p>
+      \n\n\n
+      <p>Get started here</p>
+      \n\n\n
+      <p><strong>Thalenta Ncube</strong></p> `,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -158,9 +173,17 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
     const mailOptions = {
       from: "charlesmadhuku11@gmail.com",
       to: "dastilesforever@gmail.com",
-      subject: "Issue",
-      text: "That was easy!",
-      html: "<b>Hey there!</b><br>This is our first message sent with Nodemailer<br/>",
+      subject: "Welcome to Access A CPA",
+      text: "Welcome to Access A CPA",
+      html: `<h1>Hi <strong>${fullname}</strong></h1>,
+       \n\n\n
+      <p>Congratulations on joining Access A CPA. We can help you find high-quality Accountants</p> 
+      \n\n\n
+      <p>If you have questions please reply to my email or call on +442036970265</p>
+      \n\n\n
+      <p>Get started here</p>
+      \n\n\n
+      <p><strong>Thalenta Ncube</strong></p>`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -198,9 +221,17 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       const mailOptions = {
         from: "charlesmadhuku11@gmail.com",
         to: "dastilesforever@gmail.com",
-        subject: "Sending Email using Node.js",
-        text: "That was easy!",
-        html: "<b>Hey there!</b><br>This is our first message sent with Nodemailer<br/>",
+        subject: "Welcome to Access A CPA",
+        text: "Welcome to Access A CPA",
+        html: `<h1>Hi <strong>${fullname}</strong></h1>,
+        \n\n\n
+       <p>Congratulations on joining Access A CPA. We can help you find high-quality Accountants</p> 
+       \n\n\n
+       <p>If you have questions please reply to my email or call on +442036970265</p>
+       \n\n\n
+       <p>Get started here</p>
+       \n\n\n
+       <p><strong>Thalenta Ncube</strong></p>`,
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
@@ -224,7 +255,7 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
 const loginUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(req.body)
+  console.log(req.body);
   if (!email || !password) {
     res.status(400);
     throw new Error("Please add all fields");
@@ -233,12 +264,9 @@ const loginUser = expressAsyncHandler(async (req, res) => {
   // check if the user already exists
   const userExits = await User.findOne({ email });
 
-  console.log(userExits.password)
+  console.log(userExits.password);
   if (userExits && (await bcrypt.compare(password, userExits.password))) {
-    const {
-      id,
-     role,
-    } = userExits;
+    const { id, role } = userExits;
     res.status(201).json({
       id,
       role,
