@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 let url
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'production') {
     url = process.env.MONGO_URL_DEV
 } else {
     url = process.env.MONGO_URL_PROD
