@@ -172,7 +172,7 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
 
     const mailOptions = {
       from: "charlesmadhuku11@gmail.com",
-      to: "dastilesforever@gmail.com",
+      to: email,
       subject: "Welcome to Access A CPA",
       text: "Welcome to Access A CPA",
       html: `<h1>Hi <strong>${fullname}</strong></h1>,
@@ -220,7 +220,7 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
 
       const mailOptions = {
         from: "charlesmadhuku11@gmail.com",
-        to: "dastilesforever@gmail.com",
+        to: email,
         subject: "Welcome to Access A CPA",
         text: "Welcome to Access A CPA",
         html: `<h1>Hi <strong>${fullname}</strong></h1>,
