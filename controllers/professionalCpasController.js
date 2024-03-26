@@ -27,6 +27,24 @@ const getCpas = expressAsyncHandler(async (req, res) => {
     }
 })
 
+const getAllCpas = expressAsyncHandler(async (req, res) => {
+    try {
+        let cpa = await ProfessionalCpa.find() .populate({
+            path: 'user',
+            select: '-password' // Exclude the password field
+         })
+         .sort({ createdAt: -1 });
+        console.log(cpa)
+        res.status(200)
+        res.json(cpa)
+    } catch (error) {
+        console.log(error)
+        res.status(400)
+        throw new Error(error)
+    }
+})
+
+
 const updateCpas = expressAsyncHandler(async (req, res) => {
     const {name, miles,
         postCodes,
@@ -120,5 +138,5 @@ const uploadCpasProfile = expressAsyncHandler(async (req, res) => {
 })
 
 module.exports = {
-    getCpas, updateCpas, verifyCpas, uploadCpasProfile
+    getCpas, updateCpas, verifyCpas, uploadCpasProfile,getAllCpas
 }
