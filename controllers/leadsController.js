@@ -31,12 +31,15 @@ const getLeads = expressAsyncHandler(async (req, res) => {
 const getAllLeads = expressAsyncHandler(async (req, res) => {
     try {
      
-        let lead = await Leads.find().populate(
-          "user"
-        );
+      let leads = await Leads.find()
+      .populate({
+         path: 'user',
+         select: '-password' // Exclude the password field
+      })
+      .sort({ createdAt: -1 });
        
         res.status(200);
-        res.json(lead);
+        res.json(leads);
      
     } catch (error) {
       console.log(error);

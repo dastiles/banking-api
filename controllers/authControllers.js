@@ -93,20 +93,27 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
       text: "Access A CPA",
       html: `<h1>Hi <strong>${name}</strong></h1>,
       \n\n\n
-      <p>Congratulations on joining Access A CPA. We can help you find high-quality Accounting leads in moments to grow your business to help you earn more.</p>
+      <pCongratulations on joining Access A CPA! We're excited to help you grow your business by connecting you with high-quality Accounting leads.</p>
+      \n\n\n
+      <p>Here's how Access A CPA can benefit you:</p>
       \n\n\n
       <ul>
-      <li>You get leads sent over for free</li>
-      <li>Only pay for those you contact</li>
-      <li>Customer contact details verified for you</li> 
-      <li>There's 20% off your first pack and you can start contacting customers straight away.</li>
+      <li><strong>Free Leads:</strong> Get leads sent to you at no cost.</li>
+      <li><strong>Pay for Results:</strong> Only pay for the leads you choose to contact.</li>
+      <li><strong>Verified Contact Details:</strong> Customer contact details are verified for you, saving you time and effort.</li> 
       </ul>
       \n\n\n
-      <p>If you have questions please reply to my email or call on 6305444869</p>
+      <p>If you have any questions or need assistance, please don't hesitate to reply to this email or give us a call at 6305444869. Our team is here to support you in every way possible.</p>
       \n\n\n
-      <p>Get started here</p>
+      <p>To get started, simply click <a href="https://accessacpa.vercel.app/">Here</a> to explore our services and find the perfect leads for you.</p>
+      <p>Thank you for choosing Access A CPA. We're committed to helping you succeed and achieve your business goals.</p>
       \n\n\n
-      <p><strong>Thalenta Ncube</strong></p> `,
+      <p>Best regards,</p>
+      \n\n\n
+      <p><strong>Thalenta Ncube</strong></p>
+      \n\n\n
+      <p>Access A CPA Team</p>
+      `,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -115,7 +122,6 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
         throw new Error(error);
       } else {
         console.log("Email sent: " + info.response);
-        info.response;
       }
     });
 
@@ -157,7 +163,6 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
   }
 
   const userExits = await User.findOne({ email });
-  console.log(userExits, "bembe");
   if (userExits) {
     const { id } = userExits;
     const leads = await Leads.create({
@@ -173,17 +178,26 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
     const mailOptions = {
       from: "charlesmadhuku11@gmail.com",
       to: email,
-      subject: "Welcome to Access A CPA",
+      subject: "Welcome to Access A CPA - Your Source for High-Quality Accountants!",
       text: "Welcome to Access A CPA",
       html: `<h1>Hi <strong>${fullname}</strong></h1>,
        \n\n\n
-      <p>Congratulations on joining Access A CPA. We can help you find high-quality Accountants</p> 
+      <p>We're thrilled to welcome you to Access A CPA, where we specialize in connecting you with top-notch Accountants who can meet your needs.</p> 
       \n\n\n
-      <p>If you have questions please reply to my email or call on +442036970265</p>
+      <p>Whether you're looking for expert advice on tax planning, financial reporting, or any other accounting-related services, we've got you covered.</p>
       \n\n\n
-      <p>Get started here</p>
+      <p>If you have any questions or need assistance, please don't hesitate to reply to this email or give us a call at 0771315239. Our team is here to help you every step of the way.</p>
       \n\n\n
-      <p><strong>Thalenta Ncube</strong></p>`,
+      <p>To get started, simply click <a href="https://accessacpa.vercel.app/">Here</a> to explore our services and find the perfect Accountant for you.</p>
+      \n\n\n
+      <p>Thank you for choosing Access A CPA. We look forward to assisting you with all your accounting needs</p>
+      \n\n\n
+      <p>Best Regards</p>
+      \n\n\n
+      <p>Thalenta Ncube</p>
+      \n\n\n
+      <p>Access A CPA Team</p>
+      `
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -221,17 +235,26 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       const mailOptions = {
         from: "charlesmadhuku11@gmail.com",
         to: email,
-        subject: "Welcome to Access A CPA",
+        subject: "Welcome to Access A CPA - Your Source for High-Quality Accountants!",
         text: "Welcome to Access A CPA",
         html: `<h1>Hi <strong>${fullname}</strong></h1>,
+         \n\n\n
+        <p>We're thrilled to welcome you to Access A CPA, where we specialize in connecting you with top-notch Accountants who can meet your needs.</p> 
         \n\n\n
-       <p>Congratulations on joining Access A CPA. We can help you find high-quality Accountants</p> 
-       \n\n\n
-       <p>If you have questions please reply to my email or call on +442036970265</p>
-       \n\n\n
-       <p>Get started here</p>
-       \n\n\n
-       <p><strong>Thalenta Ncube</strong></p>`,
+        <p>Whether you're looking for expert advice on tax planning, financial reporting, or any other accounting-related services, we've got you covered.</p>
+        \n\n\n
+        <p>If you have any questions or need assistance, please don't hesitate to reply to this email or give us a call at 0771315239. Our team is here to help you every step of the way.</p>
+        \n\n\n
+        <p>To get started, simply click <a href="https://accessacpa.vercel.app/">Here</a> to explore our services and find the perfect Accountant for you.</p>
+        \n\n\n
+        <p>Thank you for choosing Access A CPA. We look forward to assisting you with all your accounting needs</p>
+        \n\n\n
+        <p>Best Regards</p>
+        \n\n\n
+        <p>Thalenta Ncube</p>
+        \n\n\n
+        <p>Access A CPA Team</p>
+        `
       };
 
       transporter.sendMail(mailOptions, (error, info) => {

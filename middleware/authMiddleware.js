@@ -5,7 +5,6 @@ const User = require('../models/authModels')
 const protect = expressAsyncHandler(async (req, res, next) => {
     let token = null
 
-    console.log('what')
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             // get the token from header
@@ -25,7 +24,6 @@ const protect = expressAsyncHandler(async (req, res, next) => {
 
     }
 
-    console.log(token)
 
     if (token == null) {
         res.status(401)

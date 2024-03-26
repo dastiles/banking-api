@@ -10,9 +10,13 @@ const ProfessionalCpaSchema = mongoose.Schema(
         miles: { type: String, required: [true, 'postCode is missing'] },
         service: { type: String,required: [true, 'service is missing'] },
         postCodes: { type: String, required: [true, 'postCode is missing'] },
+        lisencingRegistration: { type: String },
+        lisencingState: { type: String},
         website: { type: String },
         size: { type: String },
-        companyName: { type: String }
+        companyName: { type: String },
+        accountStatus: { type: String, default: 'NOTACTIVE' },
+        profileUrlId:{ type: String, default: '/user.png' }
         
     },
     {
