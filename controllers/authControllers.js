@@ -139,24 +139,25 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
 const openClientAccount = expressAsyncHandler(async (req, res) => {
   const {
     email,
-    fullname,
+    name,
     summary,
     phone,
     issue,
+    password,
     requirements,
     deadline,
     contact,
     issueArray,
   } = req.body;
-  console.log(req.body);
   if (
-    !fullname ||
+    !name ||
     !email ||
     !summary ||
     !issue ||
     !issueArray ||
     !contact ||
-    !requirements
+    !requirements ||
+    !password
   ) {
     res.status(400);
     throw new Error("Please add all fields");
@@ -164,7 +165,10 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
 
   const userExits = await User.findOne({ email });
   if (userExits) {
-    const { id } = userExits;
+    const { userId } = userExits;
+    await User.findByIdAndUpdate(userId, { role: false });
+    const newUser = await User.findOne({ email });
+    const { id, role } = newUser;
     const leads = await Leads.create({
       user: id,
       summary,
@@ -175,12 +179,14 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       issues: issueArray,
     });
 
+    console.log(leads);
     const mailOptions = {
       from: "charlesmadhuku11@gmail.com",
       to: email,
-      subject: "Welcome to Access A CPA - Your Source for High-Quality Accountants!",
+      subject:
+        "Welcome to Access A CPA - Your Source for High-Quality Accountants!",
       text: "Welcome to Access A CPA",
-      html: `<h1>Hi <strong>${fullname}</strong></h1>,
+      html: `<h1>Hi <strong>${name}</strong></h1>,
        \n\n\n
       <p>We're thrilled to welcome you to Access A CPA, where we specialize in connecting you with top-notch Accountants who can meet your needs.</p> 
       \n\n\n
@@ -197,7 +203,7 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       <p>Thalenta Ncube</p>
       \n\n\n
       <p>Access A CPA Team</p>
-      `
+      `,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -210,18 +216,24 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       }
     });
 
-    res.status(201);
-    res.json(leads);
+    res.status(201).json({
+      id,
+      role,
+      token: generateToken(id, role),
+    });
   } else {
+    // harsh the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const user = await User.create({
-      name: fullname,
+      name: name,
       role: false,
       email,
       phone,
-      password: "hashedPassword",
+      password: hashedPassword,
     });
     if (user) {
-      const { id } = user;
+      const { id, role } = user;
       const leads = await Leads.create({
         user: id,
         summary,
@@ -235,9 +247,10 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
       const mailOptions = {
         from: "charlesmadhuku11@gmail.com",
         to: email,
-        subject: "Welcome to Access A CPA - Your Source for High-Quality Accountants!",
+        subject:
+          "Welcome to Access A CPA - Your Source for High-Quality Accountants!",
         text: "Welcome to Access A CPA",
-        html: `<h1>Hi <strong>${fullname}</strong></h1>,
+        html: `<h1>Hi <strong>${name}</strong></h1>,
          \n\n\n
         <p>We're thrilled to welcome you to Access A CPA, where we specialize in connecting you with top-notch Accountants who can meet your needs.</p> 
         \n\n\n
@@ -254,7 +267,7 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
         <p>Thalenta Ncube</p>
         \n\n\n
         <p>Access A CPA Team</p>
-        `
+        `,
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
@@ -266,8 +279,11 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
         }
       });
 
-      res.status(201);
-      res.json(leads);
+      res.status(201).json({
+        id,
+        role,
+        token: generateToken(id, role),
+      });
     } else {
       res.status(500);
       throw new Error("Please add all fields");
@@ -276,18 +292,18 @@ const openClientAccount = expressAsyncHandler(async (req, res) => {
 });
 
 const loginUser = expressAsyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password ,role} = req.body;
 
-  console.log(req.body);
+  console.log(req.body)
   if (!email || !password) {
     res.status(400);
     throw new Error("Please add all fields");
   }
 
   // check if the user already exists
-  const userExits = await User.findOne({ email });
+  const userExits = await User.findOne({ email,role });
 
-  console.log(userExits.password);
+  console.log(userExits);
   if (userExits && (await bcrypt.compare(password, userExits.password))) {
     const { id, role } = userExits;
     res.status(201).json({

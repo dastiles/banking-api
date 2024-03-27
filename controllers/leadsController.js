@@ -28,6 +28,52 @@ const getLeads = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const getLeadsById = expressAsyncHandler(async (req, res) => {
+  try {
+    let userIssue = await ProfessionalCpa.find({ user: req.user.id }).populate('user');
+      if (userIssue) {
+          const { service } = userIssue[0]
+          console.log(userIssue)
+      let lead = await Leads.find({ issues: service}).populate(
+        {
+            path: 'user',
+            select: '-password' // Exclude the password field
+         }
+      );
+     
+      res.status(200);
+      res.json(lead);
+    }
+      res.status(400);
+      res.json({message:'no user found'});
+   
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+    throw new Error(error);
+  }
+});
+
+const getLeadById = expressAsyncHandler(async (req, res) => {
+  const id = req.params.id
+  try {
+   
+      let lead = await Leads.findById(id).populate(
+        {
+            path: 'user',
+            select: '-password' // Exclude the password field
+         }
+      ); 
+      res.status(200);
+      res.json(lead);
+   
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+    throw new Error(error);
+  }
+});
+
 const getAllLeads = expressAsyncHandler(async (req, res) => {
     try {
      
@@ -50,5 +96,7 @@ const getAllLeads = expressAsyncHandler(async (req, res) => {
 
 module.exports = {
     getLeads,
-    getAllLeads,
+  getAllLeads,
+  getLeadsById,
+    getLeadById,
 };
