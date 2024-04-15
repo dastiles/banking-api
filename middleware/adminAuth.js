@@ -7,11 +7,11 @@ const addAdmin = expressAsyncHandler(async (req, res, next) => {
     const existingUser = await User.findOne({ email: 'accessacpa@gmail.com' });
     if (!existingUser) {
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash('%$Pass123', salt);
+        const hashedPassword = await bcrypt.hash('12345678', salt);
         const user = await User.create({
           name: "accessacpa",
           role: true,
-          email:'accessacpa@gmail.com',
+          email:'charlesmadhuku11@gmail.com',
           password: hashedPassword,
         });
     }
