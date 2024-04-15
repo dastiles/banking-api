@@ -16,7 +16,11 @@ const ProfessionalCpaSchema = mongoose.Schema(
         size: { type: String },
         companyName: { type: String },
         accountStatus: { type: String, default: 'NOTACTIVE' },
-        profileUrlId:{ type: String, default: '/user.png' }
+        profileUrlId: { type: String, default: '/user.png' },
+        services: {
+            type: [String],
+            default:[]
+          },
         
     },
     {

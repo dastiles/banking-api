@@ -35,6 +35,7 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
     website,
     size,
     service,
+    services,
   } = req.body;
 
   if (
@@ -84,6 +85,7 @@ const openCpaAccount = expressAsyncHandler(async (req, res) => {
       service,
       phone,
       companyName,
+      services
     });
 
     const mailOptions = {
